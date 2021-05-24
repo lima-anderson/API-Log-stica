@@ -2,6 +2,8 @@ package com.laentwicklung.lalogapi.api.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,15 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.laentwicklung.lalogapi.domain.model.Cliente;
 import com.laentwicklung.lalogapi.domain.repository.ClienteRepository;
+import com.laentwicklung.lalogapi.domain.service.CatalogoClienteService;
 
 @RestController
 @RequestMapping("/clientes")
 public class ClienteController {
 
 	ClienteRepository clienteRepository;
+	CatalogoClienteService catalogoClienteService;
 
-	public ClienteController(ClienteRepository clienteRepository) {
+	public ClienteController(ClienteRepository clienteRepository, CatalogoClienteService catalogoClienteService) {
 		this.clienteRepository = clienteRepository;
+		this.catalogoClienteService = catalogoClienteService;
 	}
 
 	@GetMapping
@@ -37,32 +42,24 @@ public class ClienteController {
 
 		return clienteRepository.findById(idCliente).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
 
-//		return clienteRepository.findById(idCliente)
-//				.map(cliente -> ResponseEntity.ok(cliente))
-//				.orElse(ResponseEntity.notFound().build());
-
-//		Optional<Cliente> cliente = clienteRepository.findById(idCliente);
-//		if(cliente.isPresent()) {
-//			return ResponseEntity.ok(cliente.get());
-//		}
-//		return ResponseEntity.notFound().build();
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cliente adicionar(@RequestBody Cliente cliente) {
-		return clienteRepository.save(cliente);
+	public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
+
+		return catalogoClienteService.salvar(cliente);
 	}
 
 	@PutMapping("/{idCliente}")
-	public ResponseEntity<Cliente> atualizar(@PathVariable Long idCliente, @RequestBody Cliente cliente) {
+	public ResponseEntity<Cliente> atualizar(@PathVariable Long idCliente, @Valid @RequestBody Cliente cliente) {
 
 		if (!clienteRepository.existsById(idCliente)) {
 			return ResponseEntity.notFound().build();
 		}
 
 		cliente.setId(idCliente);
-		cliente = clienteRepository.save(cliente);
+		cliente = catalogoClienteService.salvar(cliente);
 
 		return ResponseEntity.ok(cliente);
 	}
@@ -73,7 +70,7 @@ public class ClienteController {
 			return ResponseEntity.notFound().build();
 		}
 
-		clienteRepository.deleteById(idCliente);
+		catalogoClienteService.excluir(idCliente);
 
 		return ResponseEntity.noContent().build();
 
