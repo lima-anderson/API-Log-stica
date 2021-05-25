@@ -1,7 +1,7 @@
 package com.laentwicklung.lalogapi.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,9 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 public class Entrega {
@@ -27,24 +24,23 @@ public class Entrega {
 
 	@Embedded
 	private Destinatario destinatario;
+
 	private BigDecimal taxa;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	@Enumerated(EnumType.STRING)
 	private StatusEntrega status;
 
-	@JsonProperty(access = Access.READ_ONLY)
-	private LocalDateTime dataPedido;
+	private OffsetDateTime dataPedido;
 
-	@JsonProperty(access = Access.READ_ONLY)
-	private LocalDateTime dataFinalização;
+	private OffsetDateTime dataFinalização;
 
 	public Entrega() {
 
 	}
 
-	public Entrega(Cliente cliente, Destinatario destinatario, BigDecimal taxa, StatusEntrega status,
-			LocalDateTime dataPedido, LocalDateTime dataFinalização) {
+	public Entrega(Long id, Cliente cliente, Destinatario destinatario, BigDecimal taxa, StatusEntrega status,
+			OffsetDateTime dataPedido, OffsetDateTime dataFinalização) {
+		this.id = id;
 		this.cliente = cliente;
 		this.destinatario = destinatario;
 		this.taxa = taxa;
@@ -93,19 +89,19 @@ public class Entrega {
 		this.status = status;
 	}
 
-	public LocalDateTime getDataPedido() {
+	public OffsetDateTime getDataPedido() {
 		return dataPedido;
 	}
 
-	public void setDataPedido(LocalDateTime dataPedido) {
+	public void setDataPedido(OffsetDateTime dataPedido) {
 		this.dataPedido = dataPedido;
 	}
 
-	public LocalDateTime getDataFinalização() {
+	public OffsetDateTime getDataFinalização() {
 		return dataFinalização;
 	}
 
-	public void setDataFinalização(LocalDateTime dataFinalização) {
+	public void setDataFinalização(OffsetDateTime dataFinalização) {
 		this.dataFinalização = dataFinalização;
 	}
 

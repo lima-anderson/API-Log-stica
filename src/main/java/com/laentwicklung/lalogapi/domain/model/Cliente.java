@@ -13,14 +13,14 @@ public class Cliente {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotBlank
 	private String nome;
-	
+
 	@NotBlank
 	@Email
 	private String email;
-	
+
 	@NotBlank
 	private String telefone;
 
@@ -28,8 +28,8 @@ public class Cliente {
 
 	}
 
-	public Cliente(String nome, String email, String telefone) {
-		super();
+	public Cliente(Long id, @NotBlank String nome, @NotBlank @Email String email, @NotBlank String telefone) {
+		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.telefone = telefone;

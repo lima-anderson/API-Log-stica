@@ -1,37 +1,29 @@
-package com.laentwicklung.lalogapi.domain.model;
+package com.laentwicklung.lalogapi.api.model.input;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 
-@Embeddable
-public class Destinatario {
+public class DestinatarioInput {
 
 	@NotBlank
-	@Column(name = "destinatario_nome")
 	private String nome;
 
 	@NotBlank
-	@Column(name = "destinatario_logradouro")
 	private String logradouro;
 
 	@NotBlank
-	@Column(name = "destinatario_numero")
 	private String numero;
 
 	@NotBlank
-	@Column(name = "destinatario_complemento")
 	private String complemento;
 
 	@NotBlank
-	@Column(name = "destinatario_bairro")
 	private String bairro;
 
-	public Destinatario() {
+	public DestinatarioInput() {
 
 	}
 
-	public Destinatario(@NotBlank String nome, @NotBlank String logradouro, @NotBlank String numero,
+	public DestinatarioInput(@NotBlank String nome, @NotBlank String logradouro, @NotBlank String numero,
 			@NotBlank String complemento, @NotBlank String bairro) {
 		this.nome = nome;
 		this.logradouro = logradouro;
