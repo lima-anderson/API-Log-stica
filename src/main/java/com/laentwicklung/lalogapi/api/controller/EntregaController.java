@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,6 +20,7 @@ import com.laentwicklung.lalogapi.api.model.EntregaModel;
 import com.laentwicklung.lalogapi.api.model.input.EntregaInput;
 import com.laentwicklung.lalogapi.domain.model.Entrega;
 import com.laentwicklung.lalogapi.domain.repository.EntregaRepository;
+import com.laentwicklung.lalogapi.domain.service.FinalizacaoEntregaService;
 import com.laentwicklung.lalogapi.domain.service.SolicitacaoEntregaService;
 
 @RestController
@@ -27,12 +29,14 @@ public class EntregaController {
 
 	private EntregaRepository entregaRepository;
 	private SolicitacaoEntregaService solicitacaoEntregaService;
+	private FinalizacaoEntregaService finalizacaoEntregaService;
 	private EntregaAssembler entregaAssembler;
 
 	public EntregaController(EntregaRepository entregaRepository, SolicitacaoEntregaService solicitacaoEntregaService,
-			EntregaAssembler entregaAssembler) {
+			FinalizacaoEntregaService finalizacaoEntregaService, EntregaAssembler entregaAssembler) {
 		this.entregaRepository = entregaRepository;
 		this.solicitacaoEntregaService = solicitacaoEntregaService;
+		this.finalizacaoEntregaService = finalizacaoEntregaService;
 		this.entregaAssembler = entregaAssembler;
 	}
 
@@ -57,6 +61,12 @@ public class EntregaController {
 				.map(entrega -> ResponseEntity.ok(entregaAssembler.toModel(entrega)))
 				.orElse(ResponseEntity.notFound().build());
 
+	}
+
+	@PutMapping("{idEntrega}/finalizacao")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void finalizar(@PathVariable Long idEntrega) {
+		finalizacaoEntregaService.finalizar(idEntrega);
 	}
 
 }

@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.laentwicklung.lalogapi.domain.exception.NegocioException;
+
 @Entity
 public class Entrega {
 
@@ -36,7 +38,7 @@ public class Entrega {
 
 	private OffsetDateTime dataPedido;
 
-	private OffsetDateTime dataFinalização;
+	private OffsetDateTime dataFinalizacao;
 
 	@OneToMany(mappedBy = "entrega", cascade = CascadeType.ALL)
 	private List<Ocorrencia> ocorrencias = new ArrayList<>();
@@ -46,14 +48,14 @@ public class Entrega {
 	}
 
 	public Entrega(Long id, Cliente cliente, Destinatario destinatario, BigDecimal taxa, StatusEntrega status,
-			OffsetDateTime dataPedido, OffsetDateTime dataFinalização, List<Ocorrencia> ocorrencias) {
+			OffsetDateTime dataPedido, OffsetDateTime dataFinalizacao, List<Ocorrencia> ocorrencias) {
 		this.id = id;
 		this.cliente = cliente;
 		this.destinatario = destinatario;
 		this.taxa = taxa;
 		this.status = status;
 		this.dataPedido = dataPedido;
-		this.dataFinalização = dataFinalização;
+		this.dataFinalizacao = dataFinalizacao;
 		this.ocorrencias = ocorrencias;
 	}
 
@@ -105,12 +107,12 @@ public class Entrega {
 		this.dataPedido = dataPedido;
 	}
 
-	public OffsetDateTime getDataFinalização() {
-		return dataFinalização;
+	public OffsetDateTime getDataFinalizacao() {
+		return dataFinalizacao;
 	}
 
-	public void setDataFinalização(OffsetDateTime dataFinalização) {
-		this.dataFinalização = dataFinalização;
+	public void setDataFinalizacao(OffsetDateTime dataFinalizacao) {
+		this.dataFinalizacao = dataFinalizacao;
 	}
 
 	public List<Ocorrencia> getOcorrencias() {
@@ -130,6 +132,23 @@ public class Entrega {
 		getOcorrencias().add(ocorrencia);
 
 		return ocorrencia;
+	}
+
+	public void finalizar() {
+		if (naoPodeSerFinalizada()) {
+			throw new NegocioException("Entrega não pode ser finalizada.");
+		}
+
+		setStatus(StatusEntrega.FINALIZADA);
+		setDataFinalizacao(OffsetDateTime.now());
+	}
+
+	public boolean podeSerFinalizada() {
+		return StatusEntrega.PENDENTE.equals(getStatus());
+	}
+
+	public boolean naoPodeSerFinalizada() {
+		return !podeSerFinalizada();
 	}
 
 }
